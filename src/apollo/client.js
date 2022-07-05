@@ -1,14 +1,11 @@
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
-
-const linkNodeGraph = process.env.REACT_APP_LINK_GRAPH_NODE
-const linkNodeGraphBlock = process.env.REACT_APP_LINK_GRAPH_NODE_BLOCK
-const linkHealthClient = process.env.REACT_APP_LINK_HEALTH_CLIENT
+import { GRAPH_NODE, GRAPH_NODE_BLOCK, HEALTH_CLIENT, REFERRAL_CLIENT } from 'constants/graphs'
 
 export const client = new ApolloClient({
   link: new HttpLink({
-    uri: linkNodeGraph,
+    uri: GRAPH_NODE,
   }),
   cache: new InMemoryCache(),
   shouldBatch: true,
@@ -16,7 +13,7 @@ export const client = new ApolloClient({
 
 export const healthClient = new ApolloClient({
   link: new HttpLink({
-    uri: linkHealthClient,
+    uri: HEALTH_CLIENT,
   }),
   cache: new InMemoryCache(),
   shouldBatch: true,
@@ -40,7 +37,14 @@ export const stakingClient = new ApolloClient({
 
 export const blockClient = new ApolloClient({
   link: new HttpLink({
-    uri: linkNodeGraphBlock,
+    uri: GRAPH_NODE_BLOCK,
+  }),
+  cache: new InMemoryCache(),
+})
+
+export const referralClient = new ApolloClient({
+  link: new HttpLink({
+    uri: REFERRAL_CLIENT
   }),
   cache: new InMemoryCache(),
 })

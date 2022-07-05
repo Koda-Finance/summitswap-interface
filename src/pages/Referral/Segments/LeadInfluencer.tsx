@@ -8,6 +8,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { useReferralContract } from 'hooks/useContract';
 import { isAddress } from 'utils'
 import checkIfUint256 from 'utils/checkUint256'
+import useReferralHistories from 'hooks/useReferralHistories'
 import { PaginatedRewards, ReferralReward } from '../types'
 import { StyledWhiteBr } from '../StyledBr';
 import StyledInput from '../StyledInput'
@@ -35,7 +36,7 @@ const getRewardsPaginated = (rewards: ReferralReward[]) => {
 }
 
 const SetSubInfluencerSegment: React.FC<SetSubInfluencerSegmentProps> = ({
-  contract, 
+  contract,
   outputToken,
   openModel,
   transactionSubmitted,
@@ -85,8 +86,8 @@ const SetSubInfluencerSegment: React.FC<SetSubInfluencerSegmentProps> = ({
 
       try {
         const transaction = await contract.setSubInfluencer(
-          outputToken.address, 
-          values.subWalletAdress, 
+          outputToken.address,
+          values.subWalletAdress,
           ethers.utils.parseUnits(values.leadFee?.toString() || '0', 7),
           ethers.utils.parseUnits(values.refFee?.toString() || '0', 7)
         )
@@ -118,7 +119,7 @@ const SetSubInfluencerSegment: React.FC<SetSubInfluencerSegmentProps> = ({
         </CenterSign>
       </Flex>
       <Text mb="4px" small>
-        Sub influencer fee 
+        Sub influencer fee
       </Text>
       <Flex>
         <StyledInput name="refFee" type="number" onChange={formik.handleChange} value={formik.values.refFee} min="0" max="100" placeholder="0" step={0.01} />
@@ -143,50 +144,22 @@ const LeadInfluencer: React.FC<SegmentsProps> = ({
 }) => {
   const refContract = useReferralContract(true)
   const [subReward, setSubReward] = useState<PaginatedRewards>({})
-  const { account, library } = useWeb3React()
+  const { account } = useWeb3React()
+  const [page, setPage] = useState(1)
+  const referralHistories = useReferralHistories(account, outputToken?.address, null, page)
   const [selectedAddress, setSelectedAddress] = useState('')
-  
+
   useEffect(() => {
-    async function fetchReferralData() {
-      if (!account || !refContract || !library || !outputToken) return
-      
-      const referralsRewardEvents = refContract.filters.ReferralReward(null, account)
+    const rewards = getRewardsPaginated(referralHistories as ReferralReward[])
+    const subAdresses = Object.keys(rewards)
+    const firstAddress = subAdresses.length ? subAdresses[0] : ''
 
-      const latestBlocknumber = await library.getBlockNumber()
-
-      let referrerEvents = [] as Event[]
-
-      const queries: [start: number, end: number][] = []
-
-      for (
-        let blockNumber = REFERRAL_DEPLOYMENT_BLOCKNUMBER;
-        blockNumber < latestBlocknumber;
-        blockNumber += MAX_QUERYING_BLOCK_AMOUNT
-      ) {
-        queries.push([blockNumber, Math.min(latestBlocknumber, blockNumber + MAX_QUERYING_BLOCK_AMOUNT - 1)])
-      }
-      await Promise.all(queries.map(async (query) => {
-        const referrerReward = await refContract.queryFilter(referralsRewardEvents, query[0], query[1])
-
-        referrerEvents = [...referrerEvents, ...referrerReward]
-      }))
-
-      const subInfluencerReward = referrerEvents.map(event => event.args) as ReferralReward[]
-
-      const filteredRewards = subInfluencerReward.filter(reward => reward.outputToken === outputToken?.address)
-
-      const rewards = getRewardsPaginated(filteredRewards)
-
-      const subAdresses = Object.keys(rewards)
-
-      const firstAddress = subAdresses.length ? subAdresses[0] : ''
-      
-      setSelectedAddress(firstAddress)
-
-      setSubReward(rewards)
+    setSelectedAddress(firstAddress)
+    setSubReward(rewards)
+    if (referralHistories.length > 0) {
+      setPage(prevPage => prevPage + 1)
     }
-    fetchReferralData()
-  }, [account, refContract, library, outputToken])
+  }, [referralHistories, referralHistories.length])
 
   const modelFunctions = {
     openModel,
@@ -196,13 +169,13 @@ const LeadInfluencer: React.FC<SegmentsProps> = ({
   }
 
   return <>
-    <SetSubInfluencerSegment 
-      contract={refContract} 
+    <SetSubInfluencerSegment
+      contract={refContract}
       outputToken={outputToken} {...modelFunctions}/>
-    <LeadHistory 
-      paginatedRewards={subReward} 
-      selectedAddress={selectedAddress} 
-      setSelectedAddress={setSelectedAddress} 
+    <LeadHistory
+      paginatedRewards={subReward}
+      selectedAddress={selectedAddress}
+      setSelectedAddress={setSelectedAddress}
       outputToken={outputToken} />
   </>
 }

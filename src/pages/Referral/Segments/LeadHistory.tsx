@@ -24,7 +24,7 @@ const HistoryList: React.FC<HistoryListProps> = ({ history }) => {
     <>
       {history.map((record) => {
         return (
-          <Box>
+          <Box key={`${record.id}-${record.timestamp}`}>
             <ReferralTransactionRow {...record} />
           </Box>
         )
@@ -46,12 +46,12 @@ const LeadHistory: React.FC<LeadHistoryProps> = ({
     if (!outputToken) return "0"
 
     const sumAmount = paginatedRewards[selectedAddress]
-      .map((record) => record.outputTokenAmount)
+      .map((record) => Number(record.outputTokenAmount))
       .reduce((acc, currentReward) => {
-        return currentReward.add(acc)
+        return currentReward + acc
       })
 
-    return ethers.utils.formatUnits(sumAmount, outputToken.decimals)
+    return sumAmount
   }, [outputToken, paginatedRewards, selectedAddress])
 
 

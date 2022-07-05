@@ -2,15 +2,20 @@ import { BigNumber } from 'ethers'
 import { Result } from 'ethers/lib/utils';
 
 export interface ReferralReward extends Result {
-  timestamp: any
+  id: string
+  timestamp: string
   inputToken: string
+  inputTokenName: string
+  inputTokenSymbol: string
+  inputTokenAmount: string
   outputToken: string
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
+  outputTokenName: string
+  outputTokenSymbol: string
+  outputTokenAmount: string
   referrer: string
-  referrerReward: BigNumber
+  referrerReward: string
   lead: string
-  leadReward: BigNumber
+  leadReward: string
 }
 
 export interface Influencer {
