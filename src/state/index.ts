@@ -9,6 +9,7 @@ import swap from './swap/reducer'
 import mint from './mint/reducer'
 import lists from './lists/reducer'
 import burn from './burn/reducer'
+import info from './info'
 import multicall from './multicall/reducer'
 import { getThemeCache } from '../utils/theme'
 
@@ -36,6 +37,7 @@ const store = configureStore({
     burn,
     multicall,
     lists,
+    info,
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: loadedState,

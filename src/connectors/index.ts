@@ -82,8 +82,12 @@ export const walletlink = new WalletLinkConnector({
     'https://mpng.pngfly.com/20181202/bex/kisspng-emoji-domain-unicorn-pin-badges-sticker-unicorn-tumblr-emoji-unicorn-iphoneemoji-5c046729264a77.5671679315437924251569.jpg',
 })
 
-export const registerToken = async (token: Token) => {
+export const getTokenImageByAddress = (token: Token) => {
   const branch = CHAIN_ID === 56 ? 'main' : 'develop'
+  return `https://raw.githubusercontent.com/Koda-Finance/summitswap-data/${branch}/images/coins/${token.symbol?.toLowerCase()}.png`
+}
+
+export const registerToken = async (token: Token) => {
   const provider = window.ethereum
   const tokenAdded = await (provider as any).request({
     method: 'wallet_watchAsset',
@@ -93,7 +97,7 @@ export const registerToken = async (token: Token) => {
         address: token.address,
         symbol: token.symbol,
         decimals: token.decimals,
-        image: `https://raw.githubusercontent.com/Koda-Finance/summitswap-data/${branch}/images/coins/${token.symbol?.toLowerCase()}.png`,
+        image: getTokenImageByAddress(token),
       },
     },
   })

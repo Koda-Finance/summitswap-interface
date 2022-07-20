@@ -102,7 +102,7 @@ export const PRICES_BY_BLOCK = (tokenAddress, blocks) => {
   queryString += blocks.map(
     (block) => `
       t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }) { 
-        derivedETH
+        derivedBNB
       }
     `
   )
@@ -110,7 +110,7 @@ export const PRICES_BY_BLOCK = (tokenAddress, blocks) => {
   queryString += blocks.map(
     (block) => `
       b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }) { 
-        ethPrice
+        bnbPrice
       }
     `
   )
@@ -158,10 +158,10 @@ export const SHARE_VALUE = (pairAddress, blocks) => {
         reserveUSD
         totalSupply 
         token0{
-          derivedETH
+          derivedBNB
         }
         token1{
-          derivedETH
+          derivedBNB
         }
       }
     `
@@ -170,7 +170,7 @@ export const SHARE_VALUE = (pairAddress, blocks) => {
   queryString += blocks.map(
     (block) => `
       b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }) { 
-        ethPrice
+        bnbPrice
       }
     `
   )
@@ -185,14 +185,14 @@ export const ETH_PRICE = (block) => {
     query bundles {
       bundles(where: { id: ${BUNDLE_ID} } block: {number: ${block}}) {
         id
-        ethPrice
+        bnbPrice
       }
     }
   `
     : ` query bundles {
       bundles(where: { id: ${BUNDLE_ID} }) {
         id
-        ethPrice
+        bnbPrice
       }
     }
   `
@@ -289,12 +289,12 @@ export const USER_POSITIONS = gql`
         token0 {
           id
           symbol
-          derivedETH
+          derivedBNB
         }
         token1 {
           id
           symbol
-          derivedETH
+          derivedBNB
         }
         totalSupply
       }
@@ -632,14 +632,14 @@ const PairFields = `
       symbol
       name
       totalLiquidity
-      derivedETH
+      derivedBNB
     }
     token1 {
       id
       symbol
       name
       totalLiquidity
-      derivedETH
+      derivedBNB
     }
     reserve0
     reserve1
@@ -743,11 +743,11 @@ export const TOKEN_CHART = gql`
         id
         token0 {
           id
-          derivedETH
+          derivedBNB
         }
         token1 {
           id
-          derivedETH
+          derivedBNB
         }
       }
     }
@@ -759,7 +759,7 @@ const TokenFields = `
     id
     name
     symbol
-    derivedETH
+    derivedBNB
     tradeVolume
     tradeVolumeUSD
     untrackedVolumeUSD

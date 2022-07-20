@@ -27,6 +27,11 @@ const config: MenuEntry[] = [
     href: '/cross-chain-swap',
     showConnectButton: false,
   },
+  {
+    label: "Info",
+    icon: "InfoIcon",
+    href: "/info",
+  },
   // {
   //  label: 'Create Token',
   //   icon: 'SunIcon',
@@ -80,11 +85,6 @@ const config: MenuEntry[] = [
   // {
   //   label: "Team & Profile",
   //   icon: "TeamProfileIcon",
-  //   href: "/nft",
-  // },
-  // {
-  //   label: "Info",
-  //   icon: "InfoIcon",
   //   href: "/nft",
   // },
   // {

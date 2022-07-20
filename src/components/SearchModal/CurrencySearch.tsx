@@ -48,11 +48,11 @@ const TokenAutoSizer = styled(AutoSizer)`
       width: 8px;
     }
     &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => theme.colors.linkColor}; 
+      background: ${({ theme }) => theme.colors.linkColor};
       border-radius: 8px;
     }
     &::-webkit-scrollbar-track {
-      box-shadow: none; 
+      box-shadow: none;
       border-radius: 10px;
     }
   }
@@ -116,11 +116,11 @@ export function CurrencySearch({
       // sort any exact symbol matches first
       ...sorted.filter((token) => token.symbol?.toLowerCase() === symbolMatch[0]),
       ...sorted.filter((token) => token.symbol?.toLowerCase() !== symbolMatch[0]),
-    ].sort((a, b) => 
+    ].sort((a, b) =>
       b.priority - a.priority
     )
   }, [filteredTokens, searchQuery, searchToken, tokenComparator])
-  
+
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
       onCurrencySelect(currency)
